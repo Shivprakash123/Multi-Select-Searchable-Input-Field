@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import {
   Row,
   Col,
@@ -85,7 +85,35 @@ const MultiSelectInputField = props => {
   const [searchValue, setSearchValue] = useState("") // user name which is entered in the text area
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
+  // Additional state to keep track of whether the backspace key is currently being pressed
+  const [isBackspacePressed, setIsBackspacePressed] = useState(0)
+
   /*********************************** Handle functions ********************************/
+
+  // Handle function for backspace keydown
+  const handleBackspaceKeyDown = e => {
+    if (e.key === "Backspace") {
+      // Check if the input is empty and backspace is pressed
+      if (
+        searchValue === "" &&
+        selectedOptions.length > 0 &&
+        isBackspacePressed === 0
+      ) {
+        setIsBackspacePressed(1)
+      }
+      if (
+        searchValue === "" &&
+        selectedOptions.length > 0 &&
+        isBackspacePressed === 1
+      ) {
+        // Select the last element of selectedOptions
+        setIsBackspacePressed(0)
+        const lastOption = selectedOptions[selectedOptions.length - 1]
+        handleOptionClick(lastOption)
+      }
+    }
+  }
+
   // handle function to save the entered user
   const handleSearchChange = e => {
     setSearchValue(e.target.value)
@@ -142,8 +170,14 @@ const MultiSelectInputField = props => {
                         {selectedOptions.length > 0 &&
                           selectedOptions.map((option, index) => (
                             <span
+                              id={option.text + index}
                               key={option.text + index}
-                              className="bg-dark rounded-pill text-light m-1 p-1"
+                              className={`${
+                                isBackspacePressed &&
+                                index === selectedOptions.length - 1
+                                  ? "border border-3 border-danger"
+                                  : ""
+                              } bg-dark rounded-pill text-light m-1 p-1`}
                             >
                               <i className="fas fa-user-circle mx-2" />
                               {option.text}
@@ -168,6 +202,7 @@ const MultiSelectInputField = props => {
                               placeholder="Add new user..."
                               value={searchValue}
                               onChange={e => handleSearchChange(e)}
+                              onKeyDown={e => handleBackspaceKeyDown(e)}
                             />
                           </DropdownToggle>
                         </span>
