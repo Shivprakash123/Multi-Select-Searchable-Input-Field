@@ -1,4 +1,4 @@
-Run npm i to install the dependenices. Go to the Sidebar options and click on Multiple Select Field.
+Run npm i --legacy-peer-deps to install all the dependenices. Go to the Sidebar options and click on Multiple Select Field.
 To view the code for Multiple Select Field., open the file location src/pages/MultipleSelectInputField/MultiSelectInputField.js
 
 In this code I have used bootstrap/reactstrap to design the layout and make it responsive across all the viewports.
